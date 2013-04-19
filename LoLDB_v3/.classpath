@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/EclipseLink">
+		<attributes>
+			<attribute name="owner.project.facets" value="jpt.jpa"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JDBC Driver">
+		<attributes>
+			<attribute name="owner.project.facets" value="jpt.jpa"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JSoup">
+		<attributes>
+			<attribute name="owner.project.facets" value="jpt.jpa"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/H2"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/DBUnit"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/PHP_JAVA_Bridge"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/PNGEncoder"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JAI"/>
+	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

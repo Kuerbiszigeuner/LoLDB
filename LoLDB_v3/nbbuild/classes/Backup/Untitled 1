@@ -1,0 +1,83 @@
+BACKUP GERÄT
+
+/*
+	public void getCompleteTagList_HTML()
+	{
+		link = doc.select("div#browse-build a");
+		link_2 = doc.select("div.champ-name");
+		String s_toLow;
+		
+		int count_champ = 0;
+		int count_tag = 0;
+		
+		ArrayList<Object> champ_id = new ArrayList<Object>();
+		ArrayList<Object> tag_id = new ArrayList<Object>();
+		
+		for ( Champs c_id : cf.getAllChamp_DB() )
+			champ_id.add(c_id);
+		for ( Typ t_id : tf.getAllTyp_DB() )
+			tag_id.add(t_id);
+		
+		Collections.sort(tag_list_HTML);
+		completeChamp_list_HTML = new ArrayList<Object>();
+
+		for (Element ele : link)
+		{
+			for ( String s_tag : tag_list_HTML)
+			{
+				tg = new Tagging();
+				
+				s_toLow = s_tag.toLowerCase();
+				if (ele.attr("class").contains(s_toLow) == true && count_champ<tag_list_HTML.size())
+				{
+					completeChamp_list_HTML.add(champ_id.get(count_champ));
+					completeChamp_list_HTML.add(tag_id.get(count_tag));
+				}
+				count_tag++;
+			}
+			count_tag = 0;
+			count_champ++;	
+		}
+	}
+	*/
+	
+	
+	Elements link = doc.select("div#browse-build a");
+		Champ_func cf = new Champ_func();
+		Typ_func tf = new Typ_func();
+		String s_toLow;
+		
+		int count_champ = 0;
+		int count_tag = 0;
+		int count_size = 0;
+		
+		ArrayList<Object> champ_id = new ArrayList<Object>();
+		ArrayList<Object> tag_id = new ArrayList<Object>();
+		
+		
+		for ( Champs c_id : cf.getAllChamp_DB() )
+			champ_id.add(c_id);
+		for ( Typ t_id : tf.getAllTyp_DB() )
+			tag_id.add(t_id);
+		
+		Collections.sort(tag_list_HTML);
+		ArrayList<Object> completeChamp_list_HTML = new ArrayList<Object>();
+		
+		count_size = champion_list_HTML.size() - champ_id.size();
+
+		for (Element ele : link)
+		{
+			for ( String s_tag : tag_list_HTML)
+			{
+				s_toLow = s_tag.toLowerCase();
+				if (ele.attr("class").contains(s_toLow) == true && count_champ<champion_list_HTML.size()-count_size)
+				{
+					completeChamp_list_HTML.add(champ_id.get(count_champ));
+					completeChamp_list_HTML.add(tag_id.get(count_tag));
+				}
+				count_tag++;
+			}
+			count_tag = 0;
+			count_champ++;	
+		}
+		return completeChamp_list_HTML;

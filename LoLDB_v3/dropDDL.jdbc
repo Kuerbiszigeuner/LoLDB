@@ -1,0 +1,5 @@
+ALTER TABLE tagging DROP CONSTRAINT FK_tagging_champ_fs
+ALTER TABLE tagging DROP CONSTRAINT FK_tagging_typ_fs
+DROP TABLE champ
+DROP TABLE typ
+DROP TABLE tagging
