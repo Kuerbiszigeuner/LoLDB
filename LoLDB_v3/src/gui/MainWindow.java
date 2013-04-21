@@ -58,6 +58,7 @@ public class MainWindow extends JFrame
 	
 	public MainWindow() throws IOException 
 	{
+		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage("src\\League_Of_Legends_by_DKman.png"));
 		setTitle("Championselect");
 		cf = new Champ_func();
