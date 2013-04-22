@@ -33,6 +33,8 @@ public class MainWindow extends JFrame
 	private DataMining_Champs dmc = new DataMining_Champs();
 	private DataMining_Items dmi = new DataMining_Items();
 	
+	private Lock lock;
+	
 	private JList<Champs> champ_list;
 	private JList<Typ> tag_list;
 	private JLabel statusLabel;
@@ -42,21 +44,10 @@ public class MainWindow extends JFrame
 	private JLabel lIcon_item;
 	private JEditorPane jPE;
 	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainWindow frame = new MainWindow();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	
-	public MainWindow() throws IOException 
+	public MainWindow(Lock lock) throws IOException, InterruptedException 
 	{
 		setResizable(false);
 		setIconImage(Toolkit.getDefaultToolkit().getImage("src\\League_Of_Legends_by_DKman.png"));
@@ -73,18 +64,14 @@ public class MainWindow extends JFrame
 			dmc.fillDB("Typ");
 		
 		
-		
-		dmc.fillDB("Tag");
-		dmc.updateDB();
+		if ( lock != null)
+			while (lock.getRunningThreadsNumber() > 0){}
 		
 		addListe();
-		initFrame();
-		
-		
-	
-		
+		initFrame();	
 	}
 	
+
 	public void initFrame(){
 		try
 		{
@@ -129,6 +116,28 @@ public class MainWindow extends JFrame
 		
 		JMenu mnAnsicht = new JMenu("Ansicht");
 		menuBar.add(mnAnsicht);
+		
+		JMenuItem mntmPatches = new JMenuItem("Patches");
+		mntmPatches.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_mntmPatches_actionPerformed(arg0);
+			}
+		});
+		mnAnsicht.add(mntmPatches);
+		
+		JMenu mnOptionen = new JMenu("Optionen");
+		menuBar.add(mnOptionen);
+		
+		JMenuItem mntmSpeicherort = new JMenuItem("Speicherort");
+		mntmSpeicherort.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				do_mntmSpeicherort_actionPerformed(arg0);
+			}
+		});
+		mnOptionen.add(mntmSpeicherort);
+		
+		JMenu mnber = new JMenu("\u00DCber");
+		menuBar.add(mnber);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -198,11 +207,18 @@ public class MainWindow extends JFrame
 					int index = champ_list.locationToIndex(me.getPoint());
 					if(index != -1 && champ_list.getSelectedIndex() != index)
 			           champ_list.setSelectedIndex(index);
-				}	
+				}
+				
+				
+				
 				if (me.isPopupTrigger())
 					contextMenu(me);
 			}
 			 
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				do_champ_list_mouseClicked(arg0);
+			}
 		});
 		champ_list.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent arg0) {
@@ -251,10 +267,10 @@ public class MainWindow extends JFrame
 	//Die Seite von Leaguepedia wird angezapft um die Patchnotes aufzulisten
 	protected void getPatchNotes()
 	{
-		DataMining_PatchNotes dmpn = new DataMining_PatchNotes();
+		PatchNotesManagment dmpn = new PatchNotesManagment();
 		
 		jPE.setContentType("text/html");
-		jPE.setText(dmpn.getPatchNotes(champ_list.getSelectedValue().toString()));
+		//jPE.setText(dmpn.getPatchNotes(champ_list.getSelectedValue().toString()));
 	}
 
 
@@ -302,7 +318,7 @@ public class MainWindow extends JFrame
 		for ( Typ tg : tf.getTagForChamp(champ_list.getSelectedValue()) )
 			dlm_tags.addElement(tg);
 		
-		
+		Object abc = champ_list.getSelectedValue();
 		//Das Championbild wird im pIcon Panel angezeigt
 		if (champ_list.getSelectedValue() != null)
 		{
@@ -333,5 +349,33 @@ public class MainWindow extends JFrame
 		
 		cf.deleteChamp(champ_list.getSelectedValue(), abc);
 		addListe();
+	}
+	
+	protected void do_champ_list_mouseClicked(MouseEvent me) 
+	{
+		
+		/*
+		PatchNotesWindow pnframe = new PatchNotesWindow(/*champ_list.getSelectedValue()*///);
+		
+		if ( me.getClickCount() == 2)
+		{
+			System.out.println("Doppelklick YO");
+			//pnframe.setVisible(true);
+		}
+		
+	}
+	
+	protected void do_mntmPatches_actionPerformed(ActionEvent av) 
+	{
+		PatchNotesWindow pnframe = new PatchNotesWindow(/*champ_list.getSelectedValue()*/);
+		
+		System.out.println("YO");
+		pnframe.setVisible(true);
+		
+	}
+	protected void do_mntmSpeicherort_actionPerformed(ActionEvent arg0) 
+	{
+		//Optional
+		//TODO Speicherort der Bilder ändern
 	}
 }

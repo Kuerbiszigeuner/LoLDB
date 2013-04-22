@@ -25,7 +25,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/DBUnit"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/PHP_JAVA_Bridge"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/PNGEncoder"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JAI"/>
 	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

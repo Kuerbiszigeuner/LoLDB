@@ -22,4 +22,19 @@ public class JSoupManagment
 		}
 		return null;
 	}
+	
+	
+	public Document setSite(String site)
+	{	
+		try
+		{
+			doc = Jsoup.connect(site).timeout(10*2000).get();
+			return doc;
+		}
+		catch (IOException e)
+		{
+			System.out.println("Seite konnte nicht aufgerufen werden!");
+		}
+		return null;
+	}
 }

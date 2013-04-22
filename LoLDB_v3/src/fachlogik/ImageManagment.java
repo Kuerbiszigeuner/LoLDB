@@ -21,23 +21,22 @@ public class ImageManagment
 	private Champ_func cf = new Champ_func();
 	
 	//Das Bild wird heruntergeladen und in (noch) einen seperaten Ordner gespeichert
-	public void download(String imageLoc, String c_name) throws IOException
+	public void download(String imageLoc, String name) throws IOException
 	{
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		File locFile = new File(System.getProperty("user.home")+"/LOLDB/pics/"+c_name+".png");
-		
+		File locFile = new File(System.getProperty("user.home")+"/LOLDB/pics/"+name+".png");
+		checkOrdner(getFileImageOrdner());
 		if(!checkFile(locFile))
 		{
-			//RenderedImage img = JAI.create("url", url);
 			BufferedImage img = ImageIO.read(new URL(imageLoc));
 			OutputStream os;
 			
 			ImageIO.write(img, "png", out);
 		    byte[] data = out.toByteArray();
-		    os = new FileOutputStream(System.getProperty("user.home")+"/LOLDB/pics/"+c_name+".png");
+		    os = new FileOutputStream(System.getProperty("user.home")+"/LOLDB/pics/"+name+".png");
 			os.write(data);
 			os.close();
-			System.out.println(data);
+			//System.out.println(name + " " +data);
 		}
 	}
 	

@@ -20,60 +20,56 @@ import fachlogik.*;
 public class LoadingScreen extends JFrame {
 	public class DownloadThread implements Runnable
 	{
+		private String	c_name;
+		private int	i;
+		
+		private int max = champDBlist.size();
+		private Lock lock;
+
+		public DownloadThread(String c_name, int i, Lock lock) 
+		{
+			this.c_name = c_name;
+			this.i = i;
+			this.lock = lock;
+		}
+
 		@Override
 		public void run()
 		{
-			doc = jm.setSite();
-			int i = 0;
-			int max = champDBlist.size();
-			
-			for ( String c_name : champDBlist )
+			//Der Thread meldete sich in die Lock Methode
+			//Nachdem das Bild heruntergeladen wurde, meldet sich der Thread wieder ab
+			lock.addRunningThread();
+			try{im.download(urllist.get(i), c_name);}
+			catch (IOException e1){e1.printStackTrace();}
+			lock.removeRunningThread();
+		
+			//Das LoadingScreen Fenster schlieﬂt sich automatisch nachdem alle Champbilder
+			//gespeichert wurden
+			if(count < max-1)
 			{
-				if (doc != null)
+				progressBar.setValue(progressBar.getValue() + 1);
+				progressBar.repaint();
+				System.out.println("BAR: " + progressBar.getValue() + " count: " + count);
+				count++;
+			}
+			else
+			{
+				System.out.println("YO");
+		        try
 				{
-					//System.out.println("Champ: "+c_name);
+		        	dmc.updateDB();
+					mw = new MainWindow(lock);
+					dispose();
+					mw.setVisible(true);
 					
-					try
-					{
-						im.download(urllist.get(i), c_name);
-					}
-					catch (IOException e1)
-					{
-						e1.printStackTrace();
-					}
-					
-					//Progressbar wird aktualisiert, muss zuvor auf einen Maximalwert gesetzt werden 
-					//abh‰ngig davon wieviele Champs es gibt
-					progressBar.setValue(i);
-					progressBar.repaint();
-				
-					
-					//Das LoadingScreen Fenster schlieﬂt sich automatisch nachdem alle Champbilder
-					//gespeichert wurden
-					if(i < max-1)
-						i++;
-					else
-					{
-						im.addImageToChamp();
-						try
-						{
-							mw = new MainWindow();
-						}
-						catch (IOException e)
-						{
-							e.printStackTrace();
-						}
-						dispose();
-						mw.setVisible(true);
-					}
 				}
-				else
-				{
-					System.out.println("");
-				}
+				catch (IOException | InterruptedException e){e.printStackTrace();}
 			}
 		}
 	}
+	
+	
+	
 	/**
 	 * 
 	 */
@@ -96,6 +92,9 @@ public class LoadingScreen extends JFrame {
 	
 	private int posX = 0;
 	private int posY = 0;
+	private Lock lock = new Lock();
+	
+	private int count = 0;
 
 	/**
 	 * Launch the application.
@@ -119,20 +118,55 @@ public class LoadingScreen extends JFrame {
 			}
 		});
 	}
+	
+	
+	public LoadingScreen() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException, IOException, InterruptedException
+	{
+		if (cf.getAllChamp_DB().isEmpty())
+			dmc.fillDB("Champ");
+		
+		urllist = im.getImageUrl();
+		champDBlist = cf.getChampList_DB();
+		int igor = im.fileList(im.getFileImageOrdner()).length;
+		if (!(champDBlist.size() == im.fileList(im.getFileImageOrdner()).length))
+		{
+			init();
+			doc = jm.setSite();
+			lock = new Lock();
+			int i = 0;
+			progressBar.setMaximum(champDBlist.size());
+			for ( String c_name : champDBlist )
+			{
+				if (doc != null)
+					new Thread(new DownloadThread(c_name, i, lock)).start();
+				else
+					System.out.println("");
+				i++;
+			}
+			
+		}
+		else
+		{
+			dmc.updateDB();
+			mw = new MainWindow(null);
+			mw.setVisible(true);
+		}
+	}
 
 	/**
 	 * Create the frame.
+	 * @return 
 	 * @throws UnsupportedLookAndFeelException 
 	 * @throws IllegalAccessException 
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
 	 * @throws IOException 
+	 * @throws InterruptedException 
 	 */
-	public LoadingScreen() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException, IOException 
+	public void init() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException, IOException, InterruptedException 
 	{
 		//Falls die Champion Datenbank leer ist, so wird eine neue erstellt
-		if (cf.getAllChamp_DB().isEmpty())
-			dmc.fillDB("Champ");
+		
 		
 		//Das Fenster l‰sst sich, egal wohin man klickt, verschieben
 		addMouseListener(new MouseAdapter() 
@@ -190,12 +224,6 @@ public class LoadingScreen extends JFrame {
 		lIcon.setIcon(new ImageIcon(img));
 		imageLoLDB.add(lIcon);
 		
-		System.out.println(progressBar.getMaximum());
-		new Thread(new DownloadThread()).start();
-		urllist = im.getImageUrl();
-		champDBlist = cf.getChampList_DB();
+		//progressBar.setIndeterminate(true);
 	}
-	
-	
-	
 }
